@@ -1,0 +1,43 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/boca_do_sapo/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model SapoSubmission {
+  id                    String   @id @default(cuid())
+  nomeAlvo              String
+  emailAlvo             String
+  macumbinhaId          Int
+  macumbinhaTitulo      String
+  mensagemPersonalizada String?
+  emailRemetente        String?
+  createdAt             DateTime @default(now())
+  
+  @@map("sapo_submissions")
+}
+
+model Vote {
+  id               String   @id @default(cuid())
+  nome             String   // Nome original como digitado
+  nome_normalizado String   // Nome padronizado (sem acentos, maiúsculas, espaços extras)
+  feitico          String   // Nome curto do feitiço
+  timestamp        DateTime @default(now())
+  
+  @@map("votes")
+  @@index([nome_normalizado])
+  @@index([feitico])
+  @@index([timestamp])
+}
+
+model VisitCounter {
+  id    String @id @default("main")
+  count Int    @default(0)
+  
+  @@map("visit_counter")
+}
